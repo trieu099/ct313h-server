@@ -7,7 +7,7 @@ class BookService {
     #getBook(payload) {
         const book = { ...payload };
         const bookProperties = [
-            "bookNo", "bookCode", "bookName", "bookCategory", "bookAmout"
+            "bookNo", "bookCode", "bookName", "bookCategory", "bookAmount"
         ];
 
         Object.keys(book).forEach(function (key) {
@@ -24,38 +24,32 @@ class BookService {
         return { bookNo, ...book };
     }
 
-    // Find all
     async all() {
         return await this.books.select('*');
     }
-    async findByName(name) {
+    async findByName(bookName) {
         return await this.books
-            .where('name', 'like', `%${name}%`)
+            .where('bookName', 'like', `%${bookName}%`)
             .select('*');
     }
 
     // Find one by id
-    async findById(bookNo) {
-        return await this.books.where('bookNo', bookNo).select('*').first();
+    async findById(bookCode) {
+        return await this.books.where('bookCode', bookCode).select('*').first();
     }
 
     // Update
-    async update(bookNo, payload) {
+    async update(bookCode, payload) {
         const update = this.#getBook(payload);
-        return await this.books.where('bookNo', bookNo).update(update);
+        return await this.books.where('bookCode', bookCode).update(update);
     }
 
     // Delete
-    async delete(bookNo) {
-        return await this.books.where('bookNo', bookNo).del();
+    async delete(bookCode) {
+        return await this.books.where('bookCode', bookCode).del();
     }
 
-    // Find all Favorite
-    async allFavorite() {
-        return await this.books.where('favorite', 1).select('*');
-    }
 
-    // Delete all contacts
     async deleteAll() {
         return await this.books.del();
     }

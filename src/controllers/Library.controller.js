@@ -4,9 +4,9 @@ const ApiError = require('../api-error');
 
 // create and save a new book
 exports.create = async (req, res, next) => {
-    if (!req.body?.name) {
-        return next(new ApiError(400, 'Name can not be empty'));
-    }
+    // if (!req.body?.name) {
+    //     return next(new ApiError(400, 'Name can not be empty'));
+    // }
     try {
         const bookService = new BookService();
         const book = await bookService.create(req.body);
@@ -40,7 +40,7 @@ exports.findAll = async (req, res, next) => {
 exports.findOne = async( req,res,next) => {
     try {
         const bookService = new BookService();
-        const book = await bookService.findById(req.params.id);
+        const book = await bookService.findById(req.params.bookCode);
         if (!book) {
             return next(new ApiError(404,'book not found'));
         }
@@ -48,7 +48,7 @@ exports.findOne = async( req,res,next) => {
     } catch (error){
         console.log(error);
         return next(
-            new ApiError(500, `Error retrieving book with id = ${req.params.bookNo}`));
+            new ApiError(500, `Error retrieving book with id = ${req.params.bookCode}`));
         
     }
 };
@@ -60,7 +60,7 @@ exports.update = async (req, res, next) => {
 
     try {
         const bookService = new BookService();
-        const updated = await bookService.update(req.params.id, req.body);
+        const updated = await bookService.update(req.params.bookCode, req.body);
         if (!updated) {
             return next(new ApiError(404, 'book not found'));
         } 
@@ -70,17 +70,16 @@ exports.update = async (req, res, next) => {
         return next(
             new ApiError(
                 500, 
-                `Error updating book with id=${req.params.id}`
+                `Error updating book with book code=${req.params.bookCode}`
             )
         );
     }
 };
 
-// Delete a book with the specified id in the request
 exports.delete = async (req, res, next) => {
     try {
         const bookService = new BookService();
-        const deleted = await bookService.delete(req.params.id);
+        const deleted = await bookService.delete(req.params.bookCode);
         if (!deleted) {
             return next(new ApiError(404, 'Book not found'));
         } 
@@ -90,28 +89,13 @@ exports.delete = async (req, res, next) => {
         return next(
             new ApiError(
                 500, 
-                `Could not delete book with id=${req.params.id}`
+                `Could not delete book with id=${req.params.bookCode}`
             )
         );
     }
 };
 
-// Find all favorite books of a user
-exports.findAllFavorite = async (req, res, next) => {
-    try {
-        const bookService = new BookService();
-        const books = await bookService.allFavorite();
-        return res.send(books);
-    } catch (error) {
-        console.log(error);
-        return next(
-            new ApiError(
-                500, 
-                'An error occurred while retrieving favorite books'
-            )
-        );
-    }
-};
+
 
 // Delete all books of a user from the database
 exports.deleteAll = async (req, res, next) => {
@@ -131,17 +115,4 @@ exports.deleteAll = async (req, res, next) => {
         );
     }
 };
-
-
-// exports.create = (req, res) => {
-//     return res.send({ message: 'create handler'});
-// };
-
-// exports.find = (req, res) => {
-//     return res.send({ message: 'find handler'});
-// };
-
-// exports.delete = (req, res) => {
-//     return res.send({ message: 'delete handler'});
-// };
 

@@ -9,16 +9,29 @@ app.use(cors());
 app.use(express.json());
 
 const libraryController = require('./controllers/Library.controller');
-
+const accountController = require('./controllers/Account.controller');
+const customerController = require('./controllers/Customer.controller');
 app.get('/',(req,res) => {
     res.json({message: 'Nguyen Duc Trieu!'});
 });
-
+app.route('/api/register')
+    .post(accountController.create);
+//customer
+app.route('/api/customer')
+    .post(customerController.create)
+    .get(customerController.findAll)
+app.route('api/customer/listId')
+    .get(customerController.findOne)
+    .delete(customerController.delete);
+//library    
 app.route('/api/books')
     .get(libraryController.findAll)
     .post(libraryController.create)
     .delete(libraryController.delete);
-
+app.route('/api/books/:bookCode')
+    .get(libraryController.findOne)
+    .put(libraryController.update)
+    .delete(libraryController.delete);
 // Handle 404 response.
 app.use((req, res, next) => {
     return next(new ApiError(404, 'Resource not found'));
